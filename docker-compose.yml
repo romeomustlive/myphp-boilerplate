@@ -1,0 +1,55 @@
+version: "3.4"
+services:
+  nginx:
+    build:
+      context: docker/development/nginx
+    volumes:
+      - ./:/app
+    ports:
+      - 8000:80
+
+  php-fpm:
+    build:
+      context: docker/development/php-fpm
+    volumes:
+      - ./:/app
+
+  php-cli:
+    build:
+      context: docker/development/php-cli
+    volumes:
+      - ./:/app
+
+  node:
+    image: node:12.16.1-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+
+  mysql:
+    image: mysql:5.7.22
+    environment: 
+      MYSQL_DATABASE: app
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: secret
+    volumes: 
+      - data:/var/lib/mysql
+    ports: 
+      - 33061:3306
+
+  myadmin:
+    image: phpmyadmin/phpmyadmin
+    environment: 
+      PMA_HOST: mysql
+    ports: 
+      - 8080:80
+
+  mailer: 
+    image: mailhog/mailhog
+    ports: 
+      - 8001:8025
+
+volumes:
+  data:
+
